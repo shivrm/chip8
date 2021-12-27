@@ -13,17 +13,17 @@ for instr, hex in data.items():
         .replace("n", "([0-9a-f])")
     )
     regexed[instr] = regexed_hex
-    
-instruction = '2abc'
 
-for instr, hex in regexed.items():
-    match = re.match(hex, instruction)
+
+def instr_parse(instruction):
+    for instr, hex in regexed.items():
+        match = re.match(hex, instruction)
     
-    if not match:
-        continue
+        if not match:
+            continue
+        
+        print(instr, match.groups())
+        break
     
-    print(instr, match.groups())
-    break
-    
-else:
-    print("No matches")
+    else:
+        print("No matches")
