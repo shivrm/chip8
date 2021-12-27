@@ -2,28 +2,27 @@ import toml
 import re
 
 with open("./src/instr.toml", "r") as f:
-    data = toml.load(f)
+    oper_dict = toml.load(f)
 
-regexed = {}
-for instr, hex in data.items():
-    regexed_hex = (
+patterns = {}
+for opcode, hex in oper_dict.items():
+    hex_regex = (
         hex.replace("nnn", "([0-9a-f]{3})")
         .replace("x", "([0-9a-f])")
         .replace("y", "([0-9a-f])")
         .replace("n", "([0-9a-f])")
     )
-    regexed[instr] = regexed_hex
+    patterns[opcode] = hex_regex
 
 
 def instr_parse(instruction):
-    for instr, hex in regexed.items():
+    for opcode, hex in patterns.items():
         match = re.match(hex, instruction)
     
         if not match:
             continue
         
-        print(instr, match.groups())
-        break
+        return opcode, match.groups()
     
     else:
-        print("No matches")
+        return None
