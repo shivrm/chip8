@@ -22,5 +22,5 @@ class CPU(object):
         with open("./src/sprites", "rb") as f:
             binary = list(f.read(80))
 
-        bin_strs = [bin(b)[2:-4] for b in binary]
-        self.sprites = [bin_strs[idx : idx + 5] for idx in range(0, 80, 5)]
+        for idx, b in enumerate(binary):
+            self.memory[idx] = b
