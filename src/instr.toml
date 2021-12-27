@@ -1,61 +1,61 @@
 # Display
-cls  = "00e0"
-drw  = "dxyn"
+cls  = "00e0"   # Clear the display
+drw  = "dxyn"   # Draw a sprite containing n-bytes, stored at memory location I, at (Vx, Vy)
 
 # Subroutines
-call = "2nnn"
-ret  = "00ee"
+call = "2nnn"   # Call a subroutine at address 0xnnn
+ret  = "00ee"   # Return from a subroutine
 
 # Load
-ld1  = "6xkk"
-ld2  = "8xy0"
-ld3  = "annn"
-ld4  = "fx07"
-ld5  = "fx0a"
-ld6  = "fx15"
-ld7  = "fx18"
-ld8  = "fx29"
-ld9  = "fx33"
-ld10 = "fx55"
-ld11 = "fx65"
+ld1  = "6xkk"   # Vx = 0xkk
+ld2  = "8xy0"   # Vx = Vy
+ld3  = "annn"   # I  = 0xnnn
+ld4  = "fx07"   # Vx = DT
+ld5  = "fx0a"   # Vx = K; await key press
+ld6  = "fx15"   # DT = Vx
+ld7  = "fx18"   # st = Vx
+ld8  = "fx29"   # I  = location of sprite for hex value Vx
+ld9  = "fx33"   # I, I+1, I+2 = Binary coded representation of each digit of Vx
+ld10 = "fx55"   # V0, V1, ... Vx = memory from value of I through I + x
+ld11 = "fx65"   # memory from I through I + x = V0, V1 ... Vx
 
 # Arithmetic
 ## Addition
-add1 = "7xkk"
-add2 = "8xy4"
-add3 = "fx1e"
+add1 = "7xkk"   # Vx = Vx + 0xkk
+add2 = "8xy4"   # Vx = Vx + Vy
+add3 = "fx1e"   # I  = I  + Vx
 
 ## Subtraction
-sub  = "8xy5"
-subn = "8xy7"
+sub  = "8xy5"   # Vx = Vx - Vy  (VF is set if Vx > Vy)
+subn = "8xy7"   # Vx = Vy - Vx  (VF is set if Vy > Vx)
 
 # Flow Control
 
-# Jump
-jp1  = "1nnn"
-jp2  = "bnnn"
+## Jump
+jp1  = "1nnn"   # Jump to 0xnnn
+jp2  = "bnnn"   # Jumo to 0xnnn + V0
 
 ## Skip if equal
-se1  = "3xkk"
-se2  = "5xy0"
+se1  = "3xkk"   # Skip next instruction if Vx == 0xkk
+se2  = "5xy0"   # Skip next instruction if Vx == Vy
 
 ## Skip if not equal
-sne1 = "4xkk"
-sne2 = "9xy0"
+sne1 = "4xkk"   # Skip next instruction if Vx != 0xkk
+sne2 = "9xy0"   # Skip next instruction if Vx != Vy
 
 ## Skip if key
-skp  = "ex9e"
-sknp = "exa1"
+skp  = "ex9e"   # Skip next instruction if key with value Vx is pressed
+sknp = "exa1"   # Skip next instruction if key with value Vx is not pressed
 
 # Bitwise operators
 
-or   = "8xy1"
-and  = "8xy2"
-xor  = "8xy3"
+or   = "8xy1"   # Vx = Vx | Vy  (Bitwise OR)
+and  = "8xy2"   # Vx = Vx & Vy  (Bitwise AND)
+xor  = "8xy3"   # Vx = Vx ^ Vy  (Bitwise XOR)
 
-shr  = "8xy6"
-shl  = "8xye"
+shr  = "8xy6"   # Vx = Vx >> 1  (VF is set if lowest bit is 1)
+shl  = "8xye"   # Vx = Vx << 1  (VF is set if highest bit is 1)
 
 # Miscellaneous
 
-rnd  = "cxkk"
+rnd  = "cxkk"   # Vx = Random number between 0 and 255, bitwise AND with 0xkk
