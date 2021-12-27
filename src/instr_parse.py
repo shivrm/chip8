@@ -12,17 +12,21 @@ for opcode, hex in oper_dict.items():
         .replace("y", "([0-9a-f])")
         .replace("n", "([0-9a-f])")
     )
+    
     patterns[opcode] = hex_regex
 
 
 def instr_parse(instruction):
     for opcode, hex in patterns.items():
         match = re.match(hex, instruction)
-    
+
         if not match:
             continue
-        
-        return opcode, match.groups()
-    
+
+        args_str = match.groups()
+        args_int = [int(arg, 16) for arg in args_str]
+
+        return opcode, args_int
+
     else:
         return None
