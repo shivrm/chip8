@@ -1,7 +1,7 @@
 import toml
 import re
 
-with open("./src/instr.toml", "r") as f:
+with open("./src/utils/instr.toml", "r") as f:
     oper_dict = toml.load(f)
 
 patterns = {}
