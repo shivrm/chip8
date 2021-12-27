@@ -1,3 +1,5 @@
+import display
+
 class Registers:
     V = bytearray(16)
     I = 0x00
@@ -24,3 +26,17 @@ class CPU(object):
 
         for idx, b in enumerate(binary):
             self.memory[idx] = b
+
+    def loop(self):
+        display.update()
+        instr = self.memory[self.registers.PC: self.registers.PC + 1]
+        
+        self.handle(instr)
+        
+        self.registers.PC += 1
+        
+    def handle(instr):
+        # NotImplemented
+        pass
+    
+    
