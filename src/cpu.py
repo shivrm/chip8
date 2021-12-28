@@ -1,4 +1,4 @@
-import display
+from display import Display
 
 class Registers:
     V = bytearray(16)
@@ -20,6 +20,8 @@ class CPU(object):
         self.memory = bytearray(16 ** 3)
         self.stack = bytearray(16)
         self.registers = Registers()
+        
+        self.display = Display()
 
         self.load_sprites()
 
@@ -33,7 +35,7 @@ class CPU(object):
             self.memory[idx] = b
 
     def loop(self):
-        display.update() # Handle display events
+        self.display.update() # Handle display events
         
         # Get the instruction from memory
         instr = self.memory[self.registers.PC: self.registers.PC + 1]
