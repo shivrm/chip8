@@ -45,3 +45,16 @@ def ld11(cpu, reg):
     for idx in range(cpu, reg):
         memloc = cpu.registers.I + idx
         cpu.memory[memloc] = cpu.registers.V[idx]
+
+def add1(cpu, reg, value):
+    added = cpu.registers.V[reg] + value
+    cpu.registers.V[reg] = added % 256
+
+def add2(cpu, reg1, reg2):
+    added = cpu.registers.V[reg1] + cpu.registers.V[reg2]
+    cpu.registers.VF = int(added > 255)
+    cpu.registers.V[reg1] = added % 256
+    
+def add3(cpu, reg):
+    added = cpu.registers.I + cpu.registers.V[reg]
+    cpu.registers.I = added % 65536
