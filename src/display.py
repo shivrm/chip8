@@ -22,6 +22,17 @@ class Display:
         pygame.draw.rect(self.display, BLACK, pygame.Rect(x * 10, y * 10, 10, 10))
         pygame.display.update()
 
+    def flip(self, x, y):
+        color = self.display.get_at(x * 10, y * 10)
+        
+        if color == WHITE:
+            pygame.draw.rect(self.display, BLACK, pygame.Rect(x * 10, y * 10, 10, 10))
+            return True
+        
+        else:
+            pygame.draw.rect(self.display, WHITE, pygame.Rect(x * 10, y * 10, 10, 10))
+            return False
+
     def quit(self):
         pygame.quit()
     
