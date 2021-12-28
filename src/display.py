@@ -43,4 +43,3 @@ class Display:
     def quit(self):
         # Close the display
         pygame.quit()
-    
