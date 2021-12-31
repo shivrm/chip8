@@ -58,3 +58,13 @@ def add2(cpu, reg1, reg2):
 def add3(cpu, reg):
     added = cpu.registers.I + cpu.registers.V[reg]
     cpu.registers.I = added % 65536
+    
+def sub(cpu, reg1, reg2):
+    subbed = cpu.registers.V[reg1] - cpu.registers.V[reg2]
+    cpu.registers.VF = (subbed >= 0)
+    cpu.registers.V[reg1] = subbed
+    
+def subn(cpu, reg1, reg2):
+    subbed = cpu.registers.V[reg2] - cpu.registers.V[reg1]
+    cpu.registers.VF = (subbed >= 0)
+    cpu.registers.V[reg2] = subbed
