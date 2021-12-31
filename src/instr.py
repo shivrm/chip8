@@ -68,3 +68,27 @@ def subn(cpu, reg1, reg2):
     subbed = cpu.registers.V[reg2] - cpu.registers.V[reg1]
     cpu.registers.VF = (subbed >= 0)
     cpu.registers.V[reg2] = subbed
+    
+def jp1(cpu, mem):
+    cpu.registers.PC = mem
+    
+def jp2(cpu, mem):
+    cpu.registers.PC = mem + cpu.registers.V[0]
+    
+def se1(cpu, reg, value):
+    if (cpu.registers.V[reg] == value):
+        cpu.registers.PC += 1
+        
+def se2(cpu, reg1, reg2):
+    if (cpu.registers.V[reg1] == cpu.registers.V[reg2]):
+        cpu.registers.PC += 1
+        
+def sne1(cpu, reg, value):
+    if (cpu.registers.V[reg] != value):
+        cpu.registers.PC += 1
+        
+def sne2(cpu, reg1, reg2):
+    if (cpu.registers.V[reg1] != cpu.registers.V[reg2]):
+        cpu.registers.PC += 1
+    
+    
