@@ -12,7 +12,7 @@ for opcode, hex in oper_dict.items():
         .replace("y", "([0-9a-f])")
         .replace("n", "([0-9a-f])")
     )
-    
+
     patterns[opcode] = hex_regex
 
 
