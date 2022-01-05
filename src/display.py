@@ -13,6 +13,7 @@ class Display:
         pygame.init()
         self.display = pygame.display.set_mode((640, 320))
         
+        self.exit = False
         self.pressed_keys = [False] * 16
 
     def update(self):
@@ -31,6 +32,7 @@ class Display:
                     self.pressed_keys[idx] = False
             
             if event.type == pygame.QUIT:
+                self.exit = True
                 pygame.quit()
 
     def set(self, x, y):
@@ -58,4 +60,5 @@ class Display:
 
     def quit(self):
         # Close the display
+        self.exit = True
         pygame.quit()
