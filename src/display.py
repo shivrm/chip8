@@ -4,17 +4,33 @@ import pygame
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 
+keyboard = "1234QWERASDFZXCV"
+keycodes = [pygame.key.key_code(key) for key in keyboard]
+
 class Display:
     def __init__(self) -> None:
         # Initialize display
         pygame.init()
         self.display = pygame.display.set_mode((640, 320))
+        
+        self.pressed_keys = [False] * 16
 
     def update(self):
         # Update display and handle events
-        pygame.display.update()
-        for evt in pygame.event.get():
-            if evt.type == pygame.QUIT:
+        pygame.display.flip()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key in keycodes:
+                    idx = keycodes.index(event.key)
+                    self.pressed_keys[idx] = True
+                                        
+            if event.type == pygame.KEYUP:
+                if event.key in keycodes:
+                    idx = keycodes.index(event.key)
+                    self.pressed_keys[idx] = False
+            
+            if event.type == pygame.QUIT:
                 pygame.quit()
 
     def set(self, x, y):
