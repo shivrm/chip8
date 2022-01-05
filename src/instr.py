@@ -91,4 +91,31 @@ def sne2(cpu, reg1, reg2):
     if (cpu.registers.V[reg1] != cpu.registers.V[reg2]):
         cpu.registers.PC += 1
     
+# Improved Display APIs are necessary for implementing
+# skp and sknp commands
+
+def o_r(cpu, reg1, reg2):
+    value = cpu.registers.V[reg1] | cpu.registers.V[reg2]
+    cpu.registers.V[reg1] = value
     
+def and_(cpu, reg1, reg2):
+    value = cpu.registers.V[reg1] & cpu.registers.V[reg2]
+    cpu.registers.V[reg1] = value
+    
+def xor(cpu, reg1, reg2):
+    value = cpu.registers.V[reg1] ^ cpu.registers.V[reg2]
+    cpu.registers.V[reg1] = value
+    
+def shr(cpu, reg1, reg2):
+    if cpu.registers.V[reg1] & 1:
+        cpu.registers.VF = 1
+    
+    value = cpu.registers.V[reg1] >> 1
+    cpu.registers.V[reg1] = value
+    
+def shl(cpu, reg1, reg2):
+    if cpu.registers.V[reg1] & 128:
+        cpu.registers.VF = 1
+    
+    value = cpu.registers.V[reg1] << 1
+    cpu.registers.V[reg1] = value
