@@ -57,7 +57,10 @@ class Display:
         else:
             pygame.draw.rect(self.display, WHITE, pygame.Rect(x * 10, y * 10, 10, 10))
             return False
-
+    
+    def clear(self):
+        self.display.fill(BLACK)
+          
     def quit(self):
         # Close the display
         self.exit = True
