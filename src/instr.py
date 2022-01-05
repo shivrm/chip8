@@ -1,5 +1,4 @@
-from cpu import Registers
-
+from time import sleep
 
 def cls(cpu):
     cpu.display.clear()
@@ -20,10 +19,12 @@ def ld3(cpu, mem):
 def ld4(cpu, reg):
     cpu.registers.V[reg] = cpu.registers.DT
 
-
-# TODO: Add Display APIs to allow other modules to access events
-# This is necessary for ld5 as it requires waiting for keypress
-
+def ld5(cpu, reg):
+    if not any(cpu.display.pressed_keys):
+        cpu.registers.PC -= 1
+        return
+    
+    cpu.registers.V[reg] = cpu.display.pressed_keys.index(True)
 
 def ld6(cpu, reg):
     cpu.registers.DT = cpu.registers.V[reg]
@@ -114,9 +115,17 @@ def sne2(cpu, reg1, reg2):
         cpu.registers.PC += 1
 
 
-# Improved Display APIs are necessary for implementing
-# skp and sknp commands
+def skp(cpu, reg):
+    key_to_test = cpu.registers.V[reg]
+    
+    if cpu.display.pressed_keys[key_to_test]:
+        cpu.registers.PC += 1
 
+def sknp(cpu, reg):
+    key_to_test = cpu.registers.V[reg]
+    
+    if not cpu.display.pressed_keys[key_to_test]:
+        cpu.registers.PC += 1
 
 def o_r(cpu, reg1, reg2):
     value = cpu.registers.V[reg1] | cpu.registers.V[reg2]
