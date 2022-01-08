@@ -4,7 +4,24 @@ import toml
 def cls(cpu):
     cpu.display.clear()
 
-
+def call(cpu, mem):
+    if cpu.registers.SP == 15:
+        # Stack Overflow
+        return
+    
+    cpu.stack[cpu.registers.SP] = cpu.registers.PC
+    cpu.registers.SP += 1
+    
+    cpu.registers.PC = mem
+    
+def ret(cpu):
+    if cpu.registers.SP == 0:
+        # Stack Underflow
+        return
+    
+    cpu.registers.SP -= 1
+    cpu.registers.PC = cpu.stack[cpu.registers.CP]
+    
 def ld1(cpu, reg, value):
     cpu.registers.V[reg] = value
 
