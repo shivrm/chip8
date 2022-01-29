@@ -130,7 +130,7 @@ def ld7(cpu, register):
     cpu.registers.ST = cpu.registers.V[register]
 
 
-def ld8(cpu, digit):
+def ld8(cpu, reg):
     """Set the I register to the memory location where the sprite
     for the digit corresponding to 'digit' is stored
 
@@ -141,7 +141,12 @@ def ld8(cpu, digit):
     # Since the sprites are stored starting at memory address 0,
     # And each sprite occupies 5 bytes, we can obtain the location
     # of the sprite by multiplying the corresponding digit by 5
+    print(cpu.registers.V[0])
+    
+    digit = cpu.registers.V[reg] % 16
     cpu.registers.I = digit * 5
+    
+    print(cpu.registers.I, cpu.memory[cpu.registers.I: cpu.registers.I + 6])
 
 
 def ld9(cpu, register):
@@ -160,24 +165,9 @@ def ld9(cpu, register):
     for idx, digit in enumerate(digits):
         memloc = cpu.registers.I + idx
         cpu.memory[memloc] = digit
-
-
+        
+        
 def ld10(cpu, register):
-    """Loads registers V0 through V(register - 1) with the values in memory from
-    I to I + (register - 1)
-
-    Args:
-        register (int4): The index of the register upto which values are loaded
-    """
-
-    # Loop with idx = 0 through reg - 1. Get the memory address and load
-    # the register with the value at that address
-    for idx in range(register):
-        memloc = cpu.registers.I + idx
-        cpu.registers.V[idx] = cpu.memory[memloc]
-
-
-def ld11(cpu, register):
     """Sets the value at memory locations I through I + (register - 1) from
     registers V0 through V(register - 1)
 
@@ -192,19 +182,57 @@ def ld11(cpu, register):
         cpu.memory[memloc] = cpu.registers.V[idx]
 
 
-def add1(cpu, reg, value):
-    added = cpu.registers.V[reg] + value
-    cpu.registers.V[reg] = added % 256
+def ld11(cpu, register):
+    """Loads registers V0 through V(register - 1) with the values in memory from
+    I to I + (register - 1)
+
+    Args:
+        register (int4): The index of the register upto which values are loaded
+    """
+
+    # Loop with idx = 0 through reg - 1. Get the memory address and load
+    # the register with the value at that address
+    for idx in range(register):
+        memloc = cpu.registers.I + idx
+        cpu.registers.V[idx] = cpu.memory[memloc]
 
 
-def add2(cpu, reg1, reg2):
-    added = cpu.registers.V[reg1] + cpu.registers.V[reg2]
+def add1(cpu, register, value):
+    """Adds a constant value to a register
+
+    Args:
+        register (int4): The index of the register to which the value is added
+        value (int8): The value that is added
+    """
+    added = cpu.registers.V[register] + value
+    cpu.registers.V[register] = added % 256
+
+
+def add2(cpu, reg_to, reg_from):
+    """Adds the value of one register into another
+
+    Args:
+        reg_to (int4): The index of the register to which the value is added
+        reg_from (int4): The index of the register whose value is added
+    """
+    
+    # Add the two values and set VF if there is an overflow
+    added = cpu.registers.V[reg_to] + cpu.registers.V[reg_from]
     cpu.registers.VF = int(added > 255)
-    cpu.registers.V[reg1] = added % 256
+    
+    # Load the value, mod 256, into reg_from
+    cpu.registers.V[reg_to] = added % 256
 
 
-def add3(cpu, reg):
-    added = cpu.registers.I + cpu.registers.V[reg]
+def add3(cpu, register):
+    """Adds the value of a register into the I register
+
+    Args:
+        register (int4): The register whose value is added
+    """
+    
+    # Add the values, and load it into the I register, mod 65536
+    added = cpu.registers.I + cpu.registers.V[register]
     cpu.registers.I = added % 65536
 
 
@@ -221,16 +249,16 @@ def subn(cpu, reg1, reg2):
 
 
 def jp1(cpu, mem):
-    cpu.registers.PC = mem
+    cpu.registers.PC = mem - 2
 
 
 def jp2(cpu, mem):
-    cpu.registers.PC = mem + cpu.registers.V[0]
+    cpu.registers.PC = mem + cpu.registers.V[0] - 2
 
 
 def se1(cpu, reg, value):
     if cpu.registers.V[reg] == value:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def se2(cpu, reg1, reg2):
@@ -262,7 +290,7 @@ def sknp(cpu, reg):
         cpu.registers.PC += 1
 
 
-def o_r(cpu, reg1, reg2):
+def or_(cpu, reg1, reg2):
     value = cpu.registers.V[reg1] | cpu.registers.V[reg2]
     cpu.registers.V[reg1] = value
 
@@ -282,7 +310,7 @@ def shr(cpu, reg1, reg2):
         cpu.registers.VF = 1
 
     value = cpu.registers.V[reg1] >> 1
-    cpu.registers.V[reg1] = value
+    cpu.registers.V[reg1] = value % 256
 
 
 def shl(cpu, reg1, reg2):
@@ -290,12 +318,21 @@ def shl(cpu, reg1, reg2):
         cpu.registers.VF = 1
 
     value = cpu.registers.V[reg1] << 1
-    cpu.registers.V[reg1] = value
+    cpu.registers.V[reg1] = value % 256
 
 def rnd(cpu, reg, _and):
     cpu.registers.V[reg] = randint(0, 255) & _and
     
 #########################################
+
+instructions = {
+    "cls": cls, "drw": drw, "call": call, "ret": ret, "ld1": ld1, "ld2": ld2,
+    "ld3": ld3, "ld4": ld4, "ld5": ld5, "ld6": ld6, "ld7": ld7, "ld8": ld8,
+    "ld9": ld9, "ld10": ld10, "ld11": ld11, "add1": add1, "add2": add2,
+    "add3": add3, "sub": sub, "subn": subn, "jp1": jp1, "jp2": jp2, "se1": se1,
+    "se2": se2, "sne1": sne1, "sne2": sne2, "skp": skp, "sknp": sknp, "or": or_,
+    "and": and_, "xor": xor, "shr": shr, "shl": shl, "rnd": rnd
+}
 
 with open("./src/instr.toml", "r") as f:
     oper_dict = toml.load(f)
@@ -303,7 +340,8 @@ with open("./src/instr.toml", "r") as f:
 patterns = {}
 for opcode, hex in oper_dict.items():
     hex_regex = (
-        hex.replace("nnn", "([0-9a-f]{3})")
+        hex.replace("kk", "([0-9a-f]{2})")
+        .replace("nnn", "([0-9a-f]{3})")
         .replace("x", "([0-9a-f])")
         .replace("y", "([0-9a-f])")
         .replace("n", "([0-9a-f])")
@@ -313,16 +351,22 @@ for opcode, hex in oper_dict.items():
 
 
 def parse(instruction):
-    for opcode, hex in patterns.items():
-        match = re.match(hex, instruction)
+    instr_str = instruction.hex()
+        
+    for opname, hex in patterns.items():
+        match = re.match(hex, instr_str)
 
         if not match:
             continue
 
         args_str = match.groups()
         args_int = [int(arg, 16) for arg in args_str]
-
-        return opcode, args_int
+        
+        return opname, args_int
 
     else:
         return None
+
+def call(cpu, instr, args):
+    instructions[instr](cpu, *args)
+    
