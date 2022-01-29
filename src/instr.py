@@ -334,8 +334,15 @@ instructions = {
     "and": and_, "xor": xor, "shr": shr, "shl": shl, "rnd": rnd
 }
 
-with open("./src/instr.toml", "r") as f:
-    oper_dict = toml.load(f)
+oper_dict = {"cls": "00e0", "drw": "dxyn", "call": "2nnn", "ret": "00ee",
+             "ld1": "6xkk", "ld2": "8xy0", "ld3": "annn", "ld4": "fx07",
+             "ld5": "fx0a", "ld6": "fx15", "ld7": "fx18", "ld8": "fx29",
+             "ld9": "fx33", "ld10": "fx55", "ld11": "fx65", "add1": "7xkk",
+             "add2": "8xy4", "add3": "fx1e", "sub": "8xy5", "subn": "8xy7",
+             "jp1": "1nnn", "jp2": "bnnn", "se1": "3xkk", "se2": "5xy0",
+             "sne1": "4xkk", "sne2": "9xy0", "skp": "ex9e", "sknp": "exa1",
+             "or": "8xy1", "and": "8xy2", "xor": "8xy3", "shr": "8xy6",
+             "shl": "8xye", "rnd": "cxkk"}
 
 patterns = {}
 for opcode, hex in oper_dict.items():
