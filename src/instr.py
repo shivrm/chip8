@@ -1,5 +1,6 @@
 import re
 import toml
+from random import randint
 
 
 def cls(cpu):
@@ -7,6 +8,22 @@ def cls(cpu):
     cpu.display.clear()
 
 
+def drw(cpu, reg_x, reg_y, num_bytes):
+    x_start = cpu.registers.V[reg_x]
+    y_start = cpu.registers.V[reg_y]
+    
+    for byte_idx in range(num_bytes):
+        row = y_start + byte_idx
+        sprite_val = cpu.memory[cpu.registers.I + byte_idx]
+        
+        for col_offset in range(4):
+            set_bit = sprite_val & (128 >> col_offset)
+            col = x_start + col_offset
+            
+            if set_bit:
+                cpu.registers.VF = (cpu.registers.VF
+                        or cpu.display.flip(col, row))
+        
 def call(cpu, mem_addr):
     """Calls a subroutine
 
@@ -275,7 +292,9 @@ def shl(cpu, reg1, reg2):
     value = cpu.registers.V[reg1] << 1
     cpu.registers.V[reg1] = value
 
-
+def rnd(cpu, reg, _and):
+    cpu.registers.V[reg] = randint(0, 255) & _and
+    
 #########################################
 
 with open("./src/instr.toml", "r") as f:
