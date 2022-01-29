@@ -1,5 +1,5 @@
-from display import Display
-import instr
+from .display import Display
+from . import instr
 from time import sleep
 
 class Registers:
@@ -14,13 +14,13 @@ class Registers:
 
 
 class CPU(object):
-    def __init__(self, rom) -> None:
+    def __init__(self, file) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
         self.stack = [0] * 16
         self.registers = Registers()
 
-        self.load_rom(rom)
+        self.load_rom(file)
         self.display = Display()
 
         self.load_sprites()
@@ -67,5 +67,3 @@ class CPU(object):
             
         for idx, byte in enumerate(data):
             self.memory[0x200 + idx] = byte
-            
-CPU("test/test_opcode.ch8")
