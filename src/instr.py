@@ -1,4 +1,5 @@
 import re
+from pygame import sprite
 import toml
 from random import randint
 
@@ -16,13 +17,13 @@ def drw(cpu, reg_x, reg_y, num_bytes):
         row = y_start + byte_idx
         sprite_val = cpu.memory[cpu.registers.I + byte_idx]
         
-        for col_offset in range(4):
+        for col_offset in range(8):
             set_bit = sprite_val & (128 >> col_offset)
             col = x_start + col_offset
             
             if set_bit:
-                cpu.registers.V[15] = (cpu.registers.V[15]
-                        or cpu.display.flip(col, row))
+                cpu.registers.V[15] = (cpu.display.flip(col, row)
+                                       or cpu.registers.V[15])
         
 def call(cpu, mem_addr):
     """Calls a subroutine
@@ -41,7 +42,7 @@ def call(cpu, mem_addr):
     cpu.registers.SP += 1
 
     # Set the program counter to the new location
-    cpu.registers.PC = mem_addr
+    cpu.registers.PC = mem_addr - 2
 
 
 def ret(cpu):
@@ -54,7 +55,7 @@ def ret(cpu):
 
     # Pop the topmost value and store it in the program counter
     cpu.registers.SP -= 1
-    cpu.registers.PC = cpu.stack[cpu.registers.CP]
+    cpu.registers.PC = cpu.stack[cpu.registers.SP]
 
 
 def ld1(cpu, register, value):
@@ -105,7 +106,7 @@ def ld5(cpu, register):
 
     # While no keys are pressed, keep returning to this instruction
     if not any(cpu.display.pressed_keys):
-        cpu.registers.PC -= 1
+        cpu.registers.PC -= 2
         return
 
     # Set the register to the first pressed key in the list
@@ -218,9 +219,9 @@ def add2(cpu, reg_to, reg_from):
     
     # Add the two values and set VF if there is an overflow
     added = cpu.registers.V[reg_to] + cpu.registers.V[reg_from]
-    cpu.registers.V[15] = int(added > 255)
+    cpu.registers.V[15] = added > 255
     
-    # Load the value, mod 256, into reg_from
+    # Load the value, mod 256, into reg_to
     cpu.registers.V[reg_to] = added % 256
 
 
@@ -239,13 +240,13 @@ def add3(cpu, register):
 def sub(cpu, reg1, reg2):
     subbed = cpu.registers.V[reg1] - cpu.registers.V[reg2]
     cpu.registers.V[15] = subbed >= 0
-    cpu.registers.V[reg1] = subbed
+    cpu.registers.V[reg1] = subbed % 256
 
 
 def subn(cpu, reg1, reg2):
     subbed = cpu.registers.V[reg2] - cpu.registers.V[reg1]
     cpu.registers.V[15] = subbed >= 0
-    cpu.registers.V[reg2] = subbed
+    cpu.registers.V[reg2] = subbed % 256
 
 
 def jp1(cpu, mem):
@@ -263,31 +264,31 @@ def se1(cpu, reg, value):
 
 def se2(cpu, reg1, reg2):
     if cpu.registers.V[reg1] == cpu.registers.V[reg2]:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def sne1(cpu, reg, value):
     if cpu.registers.V[reg] != value:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def sne2(cpu, reg1, reg2):
     if cpu.registers.V[reg1] != cpu.registers.V[reg2]:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def skp(cpu, reg):
     key_to_test = cpu.registers.V[reg]
 
     if cpu.display.pressed_keys[key_to_test]:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def sknp(cpu, reg):
     key_to_test = cpu.registers.V[reg]
 
     if not cpu.display.pressed_keys[key_to_test]:
-        cpu.registers.PC += 1
+        cpu.registers.PC += 2
 
 
 def or_(cpu, reg1, reg2):
@@ -306,8 +307,7 @@ def xor(cpu, reg1, reg2):
 
 
 def shr(cpu, reg1, reg2):
-    if cpu.registers.V[reg1] & 1:
-        cpu.registers.V[15] = 1
+    cpu.registers.V[15] = cpu.registers.V[reg1] & 1
 
     value = cpu.registers.V[reg1] >> 1
     cpu.registers.V[reg1] = value % 256
