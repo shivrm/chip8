@@ -1,3 +1,4 @@
+from bdb import Breakpoint
 from display import Display
 import instr
 from time import sleep
@@ -5,8 +6,6 @@ from time import sleep
 class Registers:
     V = bytearray(16)
     I = 0x00
-
-    VF = 0x00
 
     PC = 0x200
     SP = 0x00
@@ -38,21 +37,20 @@ class CPU(object):
             self.memory[idx] = b
 
     def loop(self):
-        self.display.update()  # Handle display events
+        while True:
+            self.display.update()  # Handle display events
 
-        # Get the instruction from memory
-        instr = self.memory[self.registers.PC : self.registers.PC + 2]
+            # Get the instruction from memory
+            instr = self.memory[self.registers.PC : self.registers.PC + 2]
 
-        if instr.hex() == "0000":
-            self.display.quit()
-            return
+            if instr.hex() == "0000":
+                self.display.quit()
+                Breakpoint
 
-        self.handle(instr)  # Handle the instruction
+            self.handle(instr)  # Handle the instruction
 
-        sleep(0.01)
-        self.registers.PC += 2  # Increment the program counter
-        
-        self.loop()
+            sleep(0.01)
+            self.registers.PC += 2  # Increment the program counter
 
     def handle(self, opcode):
         opname, args = instr.parse(opcode)
@@ -66,4 +64,4 @@ class CPU(object):
         for idx, byte in enumerate(data):
             self.memory[0x200 + idx] = byte
             
-CPU("test/vftest.ch8")
+CPU("test/divtest.ch8")

@@ -21,7 +21,7 @@ def drw(cpu, reg_x, reg_y, num_bytes):
             col = x_start + col_offset
             
             if set_bit:
-                cpu.registers.VF = (cpu.registers.VF
+                cpu.registers.V[15] = (cpu.registers.V[15]
                         or cpu.display.flip(col, row))
         
 def call(cpu, mem_addr):
@@ -218,7 +218,7 @@ def add2(cpu, reg_to, reg_from):
     
     # Add the two values and set VF if there is an overflow
     added = cpu.registers.V[reg_to] + cpu.registers.V[reg_from]
-    cpu.registers.VF = int(added > 255)
+    cpu.registers.V[15] = int(added > 255)
     
     # Load the value, mod 256, into reg_from
     cpu.registers.V[reg_to] = added % 256
@@ -238,13 +238,13 @@ def add3(cpu, register):
 
 def sub(cpu, reg1, reg2):
     subbed = cpu.registers.V[reg1] - cpu.registers.V[reg2]
-    cpu.registers.VF = subbed >= 0
+    cpu.registers.V[15] = subbed >= 0
     cpu.registers.V[reg1] = subbed
 
 
 def subn(cpu, reg1, reg2):
     subbed = cpu.registers.V[reg2] - cpu.registers.V[reg1]
-    cpu.registers.VF = subbed >= 0
+    cpu.registers.V[15] = subbed >= 0
     cpu.registers.V[reg2] = subbed
 
 
@@ -307,7 +307,7 @@ def xor(cpu, reg1, reg2):
 
 def shr(cpu, reg1, reg2):
     if cpu.registers.V[reg1] & 1:
-        cpu.registers.VF = 1
+        cpu.registers.V[15] = 1
 
     value = cpu.registers.V[reg1] >> 1
     cpu.registers.V[reg1] = value % 256
@@ -315,7 +315,7 @@ def shr(cpu, reg1, reg2):
 
 def shl(cpu, reg1, reg2):
     if cpu.registers.V[reg1] & 128:
-        cpu.registers.VF = 1
+        cpu.registers.V[15] = 1
 
     value = cpu.registers.V[reg1] << 1
     cpu.registers.V[reg1] = value % 256
