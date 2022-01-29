@@ -37,20 +37,12 @@ class Display:
                 self.exit = True
                 pygame.quit()
 
-    def set(self, x, y):
-        # Set a pixel on the screen
-        pygame.draw.rect(self.display, WHITE, pygame.Rect(x * 10, y * 10, 10, 10))
-        pygame.display.update()
-
-    def unset(self, x, y):
-        # Unset a pixel on the screen
-        pygame.draw.rect(self.display, BLACK, pygame.Rect(x * 10, y * 10, 10, 10))
-        pygame.display.update()
-
     def flip(self, x, y):
+        if self.exit: return
+        
         # Flip a pixel on the screen.
         # Return true if the pixel was unset
-        color = self.display.get_at(x * 10, y * 10)
+        color = self.display.get_at((x * 10, y * 10))
 
         if color == WHITE:
             pygame.draw.rect(self.display, BLACK, pygame.Rect(x * 10, y * 10, 10, 10))
