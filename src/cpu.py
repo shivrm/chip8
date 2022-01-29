@@ -34,6 +34,7 @@ class CPU(object):
         self.load_rom(file)
         self.display = Display(fgcolor, bgcolor, keys)
 
+        # Load sprites and start event loop
         self.load_sprites()
         self.loop()
 
@@ -60,7 +61,6 @@ class CPU(object):
 
             # Stop execution if instruction is 0x00 0x00
             if instr.hex() == "0000":
-                input("Program end")
                 self.display.quit()
                 return
 

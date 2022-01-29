@@ -86,5 +86,4 @@ class Display:
     def quit(self):
         # Close the display
         self.exit = True
-
         pygame.quit()
