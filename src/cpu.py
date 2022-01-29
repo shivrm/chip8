@@ -1,4 +1,3 @@
-from bdb import Breakpoint
 from display import Display
 import instr
 from time import sleep
@@ -18,7 +17,7 @@ class CPU(object):
     def __init__(self, rom) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
-        self.stack = bytearray(16)
+        self.stack = [0] * 16
         self.registers = Registers()
 
         self.load_rom(rom)
@@ -44,17 +43,22 @@ class CPU(object):
             instr = self.memory[self.registers.PC : self.registers.PC + 2]
 
             if instr.hex() == "0000":
+                input("Program end")
                 self.display.quit()
-                Breakpoint
+                return
+
+            if self.registers.DT:
+                self.registers.DT -= 1
 
             self.handle(instr)  # Handle the instruction
 
-            sleep(0.01)
             self.registers.PC += 2  # Increment the program counter
 
     def handle(self, opcode):
         opname, args = instr.parse(opcode)
 
+        # v_data = " ".join(["{:02x}".format(x) for x in self.registers.V])
+        # print(f"{hex(self.registers.PC)} | {opcode.hex()} ({opname}); V: {v_data}, I: {self.registers.I}")
         instr.call(self, opname, args)
         
     def load_rom(self, rom_loc):
@@ -64,4 +68,4 @@ class CPU(object):
         for idx, byte in enumerate(data):
             self.memory[0x200 + idx] = byte
             
-CPU("test/divtest.ch8")
+CPU("test/test_opcode.ch8")

@@ -14,12 +14,12 @@ def drw(cpu, reg_x, reg_y, num_bytes):
     y_start = cpu.registers.V[reg_y]
     
     for byte_idx in range(num_bytes):
-        row = y_start + byte_idx
+        row = (y_start + byte_idx) % 32
         sprite_val = cpu.memory[cpu.registers.I + byte_idx]
         
         for col_offset in range(8):
             set_bit = sprite_val & (128 >> col_offset)
-            col = x_start + col_offset
+            col = (x_start + col_offset) % 64
             
             if set_bit:
                 cpu.registers.V[15] = (cpu.display.flip(col, row)
@@ -178,7 +178,7 @@ def ld10(cpu, register):
 
     # Loop with idx = 0 through reg - 1. Get the memory address and store
     # the value of each register at the memory addresses
-    for idx in range(register):
+    for idx in range(register + 1):
         memloc = cpu.registers.I + idx
         cpu.memory[memloc] = cpu.registers.V[idx]
 
@@ -193,7 +193,7 @@ def ld11(cpu, register):
 
     # Loop with idx = 0 through reg - 1. Get the memory address and load
     # the register with the value at that address
-    for idx in range(register):
+    for idx in range(register + 1):
         memloc = cpu.registers.I + idx
         cpu.registers.V[idx] = cpu.memory[memloc]
 
