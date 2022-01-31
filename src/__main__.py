@@ -13,6 +13,11 @@ parser.add_argument("--keys", "-k", type=str, help="a string of 16 characters to
 
 args = parser.parse_args()
 
+try:
+    open(args.file)
+except:
+    raise argparse.ArgumentTypeError("file could not be opened")
+
 if args.fgcolor and len(args.fgcolor) != 3:
     raise argparse.ArgumentTypeError("--fgcolor is invalid")
 

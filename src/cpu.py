@@ -14,14 +14,14 @@ class Registers:
 
 
 class CPU(object):
-    def __init__(self, file) -> None:
+    def __init__(self, file, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0)) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
         self.stack = [0] * 16
         self.registers = Registers()
 
         self.load_rom(file)
-        self.display = Display()
+        self.display = Display(fgcolor, bgcolor)
 
         self.load_sprites()
         self.loop()
