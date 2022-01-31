@@ -7,8 +7,8 @@ class Registers:
     V = bytearray(16)
     I = 0x00
 
-    PC = 0x200 # Program counter
-    SP = 0x00 # Stack pointer
+    PC = 0x200  # Program counter
+    SP = 0x00  # Stack pointer
 
     # Sound and display timers
     ST = 0x00
@@ -23,6 +23,7 @@ class CPU(object):
         bgcolor=(0, 0, 0),
         keys="X123QWEASDZC4RFV",
         speed=60,
+        scale=10,
     ) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
@@ -32,7 +33,7 @@ class CPU(object):
         self.sleep_time = 1 / speed
 
         self.load_rom(file)
-        self.display = Display(fgcolor, bgcolor, keys)
+        self.display = Display(fgcolor, bgcolor, keys, scale)
 
         # Load sprites and start event loop
         self.load_sprites()
@@ -49,7 +50,7 @@ class CPU(object):
 
     def loop(self):
         while True:
-            
+
             # Try to update display - raises error if display has been quit
             try:
                 self.display.update()  # Handle display events
@@ -68,7 +69,7 @@ class CPU(object):
             if self.registers.DT:
                 self.registers.DT -= 1
 
-            self.handle(instr) # Handle the instruction
+            self.handle(instr)  # Handle the instruction
 
             sleep(self.sleep_time)
             self.registers.PC += 2  # Increment the program counter
@@ -80,19 +81,19 @@ class CPU(object):
             opcode (bytearray[2]): A bytearray of length 2, containing
             the bytes for the instruction opcode
         """
-        
+
         # Parse the instruction into operation name and arguments
         opname, args = instr.parse(opcode)
 
         # For debug
         # v_data = " ".join(["{:02x}".format(x) for x in self.registers.V])
         # print(f"{hex(self.registers.PC)} | {opcode.hex()} ({opname}); V: {v_data}, I: {self.registers.I}")
-        
+
         # Call the function associated with the instruction
         instr.call(self, opname, args)
 
     def load_rom(self, rom_loc):
-        
+
         # Open ROM and read data
         with open(rom_loc, "rb") as f:
             data = f.read()

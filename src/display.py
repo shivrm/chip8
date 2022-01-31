@@ -7,31 +7,33 @@ import pygame
 
 class Display:
     def __init__(
-        self, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0), keys="X123QWEASDZC4RFV"
+        self,
+        fgcolor=(255, 255, 255),
+        bgcolor=(0, 0, 0),
+        keys="X123QWEASDZC4RFV",
+        scale=10,
     ) -> None:
 
         # Initialize display
         pygame.init()
-        self.display = pygame.display.set_mode((640, 320))
+        self.display = pygame.display.set_mode((64 * scale, 32 * scale))
+
+        self.scale = scale
 
         # Set color and keyboard
         self.set_color(fgcolor, bgcolor, clear=True)
         self.set_keys(keys)
 
-        self.exit = False # Whether the display has been closed
-        self.pressed_keys = [False] * 16 # Which keys have been pressed
+        self.exit = False  # Whether the display has been closed
+        self.pressed_keys = [False] * 16  # Which keys have been pressed
 
     def update(self):
-        
-        if self.exit:
-            return
-        
         # Update display
         pygame.display.flip()
 
         # Handle events
         for event in pygame.event.get():
-            
+
             # If any key is pressed, mark it as pressed
             if event.type == pygame.KEYDOWN:
                 if event.key in self.keycodes:
@@ -53,19 +55,25 @@ class Display:
         if self.exit:
             return
 
+        scale = self.scale
+
         # Flip a pixel on the screen.
         # Return true if the pixel was unset
-        color = self.display.get_at((x * 10, y * 10))
+        color = self.display.get_at((x * scale, y * scale))
 
         if color == self.FGCOLOR:
             pygame.draw.rect(
-                self.display, self.BGCOLOR, pygame.Rect(x * 10, y * 10, 10, 10)
+                self.display,
+                self.BGCOLOR,
+                pygame.Rect(x * scale, y * scale, scale, scale),
             )
             return True
 
         else:
             pygame.draw.rect(
-                self.display, self.FGCOLOR, pygame.Rect(x * 10, y * 10, 10, 10)
+                self.display,
+                self.FGCOLOR,
+                pygame.Rect(x * scale, y * scale, scale, scale),
             )
             return False
 
