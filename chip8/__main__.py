@@ -1,7 +1,10 @@
 import argparse
 from .cpu import CPU
 
-parser = argparse.ArgumentParser(description="An interpreter for CHIP-8 programs")
+parser = argparse.ArgumentParser(
+    prog="python -m chip8",
+    description="An interpreter for CHIP-8 programs"
+)
 
 parser.add_argument("file", help="path to a CHIP-8 ROM")
 
