@@ -4,6 +4,11 @@ from .cpu import CPU
 parser = argparse.ArgumentParser(description="An interpreter for CHIP-8 programs")
 
 parser.add_argument("file", help="path to a CHIP-8 ROM")
+
+parser.add_argument(
+    "--url", "-u", help="specifies that the file path is a URL", action="store_true"
+)
+
 parser.add_argument(
     "--speed", "-s", type=int, help="aumber of cycles to execute per second"
 )
@@ -32,10 +37,11 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-try:
-    open(args.file)
-except:
-    raise argparse.ArgumentTypeError("file could not be opened")
+if not args.url:
+    try:
+        open(args.file)
+    except:
+        raise argparse.ArgumentTypeError("file could not be opened")
 
 if args.fgcolor and len(args.fgcolor) != 3:
     raise argparse.ArgumentTypeError("--fgcolor is invalid")

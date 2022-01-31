@@ -1,5 +1,7 @@
 from .display import Display
 from . import instr
+
+import urllib.request
 from time import sleep
 
 
@@ -24,6 +26,7 @@ class CPU(object):
         keys="X123QWEASDZC4RFV",
         speed=60,
         scale=10,
+        url=False,
     ) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
@@ -32,7 +35,7 @@ class CPU(object):
 
         self.sleep_time = 1 / speed
 
-        self.load_rom(file)
+        self.load_rom(file, url)
         self.display = Display(fgcolor, bgcolor, keys, scale)
 
         # Load sprites and start event loop
@@ -92,11 +95,15 @@ class CPU(object):
         # Call the function associated with the instruction
         instr.call(self, opname, args)
 
-    def load_rom(self, rom_loc):
+    def load_rom(self, rom_loc, url):
 
         # Open ROM and read data
-        with open(rom_loc, "rb") as f:
-            data = f.read()
+        if not url:
+            with open(rom_loc, "rb") as f:
+                data = f.read()
+
+        else:
+            data = urllib.request.urlopen(rom_loc).read()
 
         # Write to memory starting at 0x200
         for idx, byte in enumerate(data):
