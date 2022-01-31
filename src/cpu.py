@@ -14,11 +14,13 @@ class Registers:
 
 
 class CPU(object):
-    def __init__(self, file, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0)) -> None:
+    def __init__(self, file, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0), keys="X123QWEASDZC4RFV", speed=60) -> None:
         # Initialize the memory, stack and registers
         self.memory = bytearray(16 ** 3)
         self.stack = [0] * 16
         self.registers = Registers()
+
+        self.sleep_time = 1 / speed
 
         self.load_rom(file)
         self.display = Display(fgcolor, bgcolor)
@@ -52,6 +54,7 @@ class CPU(object):
 
             self.handle(instr)  # Handle the instruction
 
+            sleep(self.sleep_time)
             self.registers.PC += 2  # Increment the program counter
 
     def handle(self, opcode):

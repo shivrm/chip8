@@ -3,19 +3,16 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "True"
 
 import pygame
 
-# Define constants
-
-keyboard = "1234QWERASDFZXCV"
-keycodes = [pygame.key.key_code(key) for key in keyboard]
-
-
 class Display:
-    def __init__(self, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0)) -> None:
+    def __init__(self, fgcolor=(255, 255, 255), bgcolor=(0, 0, 0),
+                 keys="X123QWEASDZC4RFV") -> None:
+        
         # Initialize display
         pygame.init()
         self.display = pygame.display.set_mode((640, 320))
         
         self.set_color(fgcolor, bgcolor, clear=True)
+        self.set_keys(keys)
         
         self.exit = False
         self.pressed_keys = [False] * 16
@@ -26,13 +23,13 @@ class Display:
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key in keycodes:
-                    idx = keycodes.index(event.key)
+                if event.key in self.keycodes:
+                    idx = self.keycodes.index(event.key)
                     self.pressed_keys[idx] = True
 
             if event.type == pygame.KEYUP:
-                if event.key in keycodes:
-                    idx = keycodes.index(event.key)
+                if event.key in self.keycodes:
+                    idx = self.keycodes.index(event.key)
                     self.pressed_keys[idx] = False
 
             if event.type == pygame.QUIT:
@@ -60,6 +57,9 @@ class Display:
         
         if clear: self.clear()
 
+    def set_keys(self, keys="X123QWEASDZC4RFV"):
+        self.keyboard = keys
+        self.keycodes = [pygame.key.key_code(key) for key in self.keyboard]
 
     def clear(self):
         self.display.fill(self.BGCOLOR)
