@@ -43,12 +43,16 @@ class CPU(object):
         self.loop()
 
     def load_sprites(self):
-        # Open the file containing the sprites and read the bytes
-        with open("./src/sprites", "rb") as f:
-            binary = list(f.read(80))
+        # Binary data for the sprites
+        sprites = (b'\xf0\x90\x90\x90\xf0 `  p\xf0\x10\xf0\x80\xf0\xf0\x10\xf0'
+                   b'\x10\xf0\x90\x90\xf0\x10\x10\xf0\x80\xf0\x10\xf0\xf0\x80'
+                   b'\xf0\x90\xf0\xf0\x10 @@\xf0\x90\xf0\x90\xf0\xf0\x90\xf0'
+                   b'\x10\xf0\xf0\x90\xf0\x90\x90\xe0\x90\xe0\x90\xe0\xf0\x80'
+                   b'\x80\x80\xf0\xe0\x90\x90\x90\xe0\xf0\x80\xf0\x80\xf0\xf0'
+                   b'\x80\xf0\x80\x80')
 
         # Write the bytes to memory, from 0x000 to 0x07f
-        for idx, b in enumerate(binary):
+        for idx, b in enumerate(sprites):
             self.memory[idx] = b
 
     def loop(self):
