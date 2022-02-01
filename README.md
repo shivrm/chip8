@@ -1,15 +1,15 @@
 # chip8
 
 - [chip8](#chip8)
-    + [Installation](#installation)
-    + [Global Installation](#global-installation)
-    + [Add it to a specific project](#add-it-to-a-specific-project)
-    + [Uninstall](#uninstall)
-  * [Usage](#usage)
-    + [Command Line Usage](#command-line-usage)
-    + [Using in Python scripts](#using-in-python-scripts)
-  * [ROMs](#roms)
-  * [License](#license)
+  - [Installation](#installation)
+    - [Global Installation](#global-installation)
+    - [Add it to a specific project](#add-it-to-a-specific-project)
+    - [Uninstall](#uninstall)
+  - [Usage](#usage)
+    - [Command Line Usage](#command-line-usage)
+    - [Using in Python scripts](#using-in-python-scripts)
+  - [ROMs](#roms)
+  - [License](#license)
 
 ---
 
@@ -17,7 +17,7 @@ An emulator for the CHIP-8 programming language, written in Python. Supports alm
 
 The CHIP-8 virtual machine can be either imported as a module in Python scripts, or run from the command line.
 
-### Installation
+## Installation
 You can install the emulator either globally, or add it to a specific project.
 
 First, clone the git repository, or download the source code.
